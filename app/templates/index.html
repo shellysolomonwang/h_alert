@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hermès Bag Alert</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem auto; max-width: 780px; }
+      form, .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+      input, select, button { margin-top: 0.5rem; padding: 0.5rem; width: 100%; }
+      button { cursor: pointer; }
+      .small { color: #666; font-size: 0.92rem; }
+      .ok { background: #eefcf0; border: 1px solid #bbe9c2; padding: 0.6rem; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Hermès Women's Bags Availability Alerts</h1>
+    <p class="small">
+      The monitor checks inventory every <strong>30 seconds</strong> (configurable) and sends an email if your selected bag appears in stock.
+    </p>
+    {% if message %}<p class="ok">{{ message }}</p>{% endif %}
+
+    <form action="/subscribe" method="post">
+      <h2>Create Subscription</h2>
+      <label>Email</label>
+      <input type="email" name="email" placeholder="you@example.com" required />
+      <label>Select a bag</label>
+      <select name="bag_name" required>
+        {% for name in bag_names %}
+          <option value="{{ name }}">{{ name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Subscribe</button>
+    </form>
+
+    <div class="card">
+      <h2>Active Subscriptions</h2>
+      {% if subscriptions %}
+      <ul>
+        {% for sub in subscriptions %}
+        <li>
+          <strong>{{ sub.bag_name }}</strong> — {{ sub.email }}
+          <form action="/unsubscribe/{{ sub.id }}" method="post" style="display:inline; border:0; padding:0; margin:0 0 0 0.5rem;">
+            <button style="width:auto; display:inline; padding:0.3rem 0.6rem;">Unsubscribe</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No subscriptions yet.</p>
+      {% endif %}
+    </div>
+  </body>
+</html>
